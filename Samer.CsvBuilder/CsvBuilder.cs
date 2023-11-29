@@ -61,12 +61,12 @@ namespace GoWorkPro.CsvBuilder
 
         public static ICsvBuilder Datasets(params List<string>[] rows)
         {
-            DataSet dataSet = new DataSet();
+            DataSet dataSet = new();
             int maxColumns = (from x in rows
                        select x.Count into x
                        orderby x descending
                        select x).FirstOrDefault();
-            DataTable dataTable = new DataTable();
+            DataTable dataTable = new();
             for (int i = 0; i < maxColumns; i++)
             {
                 dataTable.Columns.Add(new DataColumn("column" + i + 1));
@@ -139,19 +139,17 @@ namespace GoWorkPro.CsvBuilder
         }
         public void Dispose()
         {
-            if (_stream != null)
-                _stream.Dispose();
+            GC.SuppressFinalize(this);
+            _stream?.Dispose();
         }
         public MemoryStream GetStream() { _streamWriter.Flush(); _stream.Position = 0; return _stream; }
         public void SaveAsFile(string filePath)
         {
             // Save the stream content to a file
-            using (FileStream fileStream = File.Create(filePath))
-            {
-                _streamWriter.Flush();
-                _stream.Position = 0;
-                _stream.CopyTo(fileStream);
-            }
+            using FileStream fileStream = File.Create(filePath);
+            _streamWriter.Flush();
+            _stream.Position = 0;
+            _stream.CopyTo(fileStream);
         }
     }
 }
