@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\samer.shahbaz\\source\\repos\\ExcelUtility\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
+      "projectUniqueName": "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
       "projectName": "GoWorkPro.CsvBuilder",
-      "projectPath": "C:\\Users\\samer.shahbaz\\source\\repos\\ExcelUtility\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
+      "projectPath": "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
       "packagesPath": "C:\\Users\\samer.shahbaz\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\samer.shahbaz\\source\\repos\\ExcelUtility\\Samer.CsvBuilder\\obj\\",
+      "outputPath": "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\samer.shahbaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
