@@ -5,7 +5,7 @@
     <version>1.0.0</version>
     <title>CSV Builder</title>
     <authors>Samer Shahbaz</authors>
-    <icon>8242984.png</icon>
+    <icon>favicon-3.png</icon>
     <readme>README.md</readme>
     <projectUrl>https://extentions.goworkpro.com/csv-builder</projectUrl>
     <description>Very simple and Easy to use, convert datatables to CSV
@@ -60,13 +60,14 @@ csvExtractor.SaveAsFile("output.csv");
 csvBuilder.Dispose();
 This utility simplifies the process of CSV generation, providing users with a flexible and efficient solution for working with tabular data in the .NET environment.</description>
     <copyright>CsvBuilder Utility © 2023 Samer Shahbaz. All rights reserved.</copyright>
+    <repository type="git" url="https://github.com/GoWorkPro/CSV-Builder.git" />
     <dependencies>
       <group targetFramework="net5.0" />
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Users\samer.shahbaz\source\repos\ExcelUtility\Samer.CsvBuilder\bin\Release\net5.0\GoWorkPro.CsvBuilder.dll" target="lib\net5.0\GoWorkPro.CsvBuilder.dll" />
+    <file src="C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\bin\Release\net5.0\GoWorkPro.CsvBuilder.dll" target="lib\net5.0\GoWorkPro.CsvBuilder.dll" />
     <file src="C:\Users\samer.shahbaz\Desktop\README.md" target="\README.md" />
-    <file src="C:\Users\samer.shahbaz\Downloads\8242984.png" target="\8242984.png" />
+    <file src="C:\Users\samer.shahbaz\Downloads\favicon-1,favicon-2,favicon-3\favicon-3.png" target="\favicon-3.png" />
   </files>
 </package>
