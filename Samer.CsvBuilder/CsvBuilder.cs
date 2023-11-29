@@ -58,6 +58,31 @@ namespace GoWorkPro.CsvBuilder
             }
             return new CsvBuilder(reArrangedDataset);
         }
+
+        public static ICsvBuilder Datasets(params List<string>[] rows)
+        {
+            DataSet dataSet = new DataSet();
+            int maxColumns = (from x in rows
+                       select x.Count into x
+                       orderby x descending
+                       select x).FirstOrDefault();
+            DataTable dataTable = new DataTable();
+            for (int i = 0; i < maxColumns; i++)
+            {
+                dataTable.Columns.Add(new DataColumn("column" + i + 1));
+            }
+
+            foreach (List<string> source in rows)
+            {
+                DataRowCollection rows2 = dataTable.Rows;
+                object[] values = source.Select((string x) => x).ToArray();
+                rows2.Add(values);
+            }
+
+            dataSet.Tables.Add(dataTable);
+            return new CsvBuilder(dataSet);
+        }
+
         public ICsvExtractor Build(params int[] columnsTobePresentedForTableIndex)
         {
             this._isBuild = true;
