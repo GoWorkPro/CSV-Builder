@@ -61,12 +61,12 @@ namespace GoWorkPro.CsvBuilder
 
         public static ICsvBuilder Datasets(params List<string>[] rows)
         {
-            DataSet dataSet = new();
+            DataSet dataSet = new DataSet();
             int maxColumns = (from x in rows
                        select x.Count into x
                        orderby x descending
                        select x).FirstOrDefault();
-            DataTable dataTable = new();
+            DataTable dataTable = new DataTable();
             for (int i = 0; i < maxColumns; i++)
             {
                 dataTable.Columns.Add(new DataColumn("column" + i + 1));

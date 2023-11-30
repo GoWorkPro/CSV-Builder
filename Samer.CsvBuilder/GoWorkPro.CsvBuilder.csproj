@@ -1,14 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageId>GoWorkPro.CsvBuilder</PackageId>
-    <Title>CSV Builder</Title>
-    <Authors>Samer Shahbaz </Authors>
-    <Company>GoWorkPro</Company>
-    <Description>Very simple and Easy to use, convert datatables to CSV
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageId>GoWorkPro.CsvBuilder</PackageId>
+		<Title>CSV Builder</Title>
+		<Authors>Samer Shahbaz </Authors>
+		<Company>GoWorkPro</Company>
+		<Description>
+Very simple and Easy to use, convert datatables to CSV
 Author: Samer Shahbaz
 
 Create Date: 15/11/2023
@@ -58,25 +60,29 @@ csvExtractor.SaveAsFile("output.csv");
 
 //dispose if necessary
 csvBuilder.Dispose();
-This utility simplifies the process of CSV generation, providing users with a flexible and efficient solution for working with tabular data in the .NET environment.</Description>
-    <Copyright>CsvBuilder Utility © 2023 Samer Shahbaz. All rights reserved.</Copyright>
-    <PackageIcon>favicon-3.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.0</Version>
-    <PackageProjectUrl>https://extentions.goworkpro.com/csv-builder</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/GoWorkPro/CSV-Builder.git</RepositoryUrl>
-  </PropertyGroup>
+This utility simplifies the process of CSV generation, providing users with a flexible and efficient solution for working with tabular data in the .NET environment.
 
-  <ItemGroup>
-    <None Include="..\..\..\..\Desktop\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\..\..\Downloads\favicon-1,favicon-2,favicon-3\favicon-3.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+For More Information See 
+https://goworkpro.github.io/CSV-Builder-Utility/
+</Description>
+		<Copyright>CsvBuilder Utility © 2023 Samer Shahbaz. All rights reserved.</Copyright>
+		<PackageIcon>csv-icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Version>2.1.0</Version>
+		<PackageProjectUrl>https://goworkpro.github.io/CSV-Builder-Utility/</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/GoWorkPro/CSV-Builder.git</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\..\Desktop\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\..\..\Downloads\csv-icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>
