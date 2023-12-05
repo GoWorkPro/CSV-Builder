@@ -10,6 +10,7 @@ namespace GoWorkPro.CsvBuilder
     public interface ICsvBuilder : IDisposable
     {
         ICsvExtractor Build(params int[] columnsTobePresentedForTableIndex);
-        public event ValueParser? ValueRenderEvent;
+
+        event ValueParser ValueRenderEvent;
     }
 }

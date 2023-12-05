@@ -10,15 +10,3 @@ C:\Users\samer.shahbaz\source\repos\ExcelUtility\Samer.CsvBuilder\obj\Release\ne
 C:\Users\samer.shahbaz\source\repos\ExcelUtility\Samer.CsvBuilder\obj\Release\net5.0\refint\GoWorkPro.CsvBuilder.dll
 C:\Users\samer.shahbaz\source\repos\ExcelUtility\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.pdb
 C:\Users\samer.shahbaz\source\repos\ExcelUtility\Samer.CsvBuilder\obj\Release\net5.0\ref\GoWorkPro.CsvBuilder.dll
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\bin\Release\net5.0\GoWorkPro.CsvBuilder.deps.json
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\bin\Release\net5.0\GoWorkPro.CsvBuilder.dll
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\bin\Release\net5.0\GoWorkPro.CsvBuilder.pdb
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.csproj.AssemblyReference.cache
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.AssemblyInfoInputs.cache
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.AssemblyInfo.cs
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.csproj.CoreCompileInputs.cache
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.dll
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\refint\GoWorkPro.CsvBuilder.dll
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\GoWorkPro.CsvBuilder.pdb
-C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\obj\Release\net5.0\ref\GoWorkPro.CsvBuilder.dll

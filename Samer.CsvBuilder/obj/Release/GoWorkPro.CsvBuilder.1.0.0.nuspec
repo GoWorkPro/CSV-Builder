@@ -9,64 +9,64 @@
     <readme>README.md</readme>
     <projectUrl>https://extentions.goworkpro.com/csv-builder</projectUrl>
     <description>Very simple and Easy to use, convert datatables to CSV
-Author: Samer Shahbaz
+			Author: Samer Shahbaz
 
-Create Date: 15/11/2023
+			Create Date: 15/11/2023
 
-Description:
-The CsvBuilder utility, developed by Samer Shahbaz, is a powerful tool designed to simplify the process of creating CSV (Comma-Separated Values) files using .NET DataTables. This utility provides a convenient and efficient way to generate CSV data from one or more DataTables within a DataSet.
+			Description:
+			The CsvBuilder utility, developed by Samer Shahbaz, is a powerful tool designed to simplify the process of creating CSV (Comma-Separated Values) files using .NET DataTables. This utility provides a convenient and efficient way to generate CSV data from one or more DataTables within a DataSet.
 
-Key Features:
+			Key Features:
 
-DataSet Integration: Accepts a DataSet as input, allowing the user to aggregate multiple DataTables for CSV creation.
-Flexible Value Rendering: Supports a customizable event, ValueRenderEvent, which allows users to define a custom parser for values based on their data type (column or row).
-Multiple DataTable Support: Enables the user to selectively include columns from different DataTables by specifying the table index.
-Stream Handling: The utility efficiently manages memory streams to optimize CSV generation.
-Dispose Method: Implements the IDisposable interface for proper resource management.
-Usage:
+			DataSet Integration: Accepts a DataSet as input, allowing the user to aggregate multiple DataTables for CSV creation.
+			Flexible Value Rendering: Supports a customizable event, ValueRenderEvent, which allows users to define a custom parser for values based on their data type (column or row).
+			Multiple DataTable Support: Enables the user to selectively include columns from different DataTables by specifying the table index.
+			Stream Handling: The utility efficiently manages memory streams to optimize CSV generation.
+			Dispose Method: Implements the IDisposable interface for proper resource management.
+			Usage:
 
-Constructor:
-Static Method for Creating CsvBuilder with Multiple DataTables:
-CsvBuilder csvBuilder = CsvBuilder.Datasets(dataTable1, dataTable2, ...);
+			Constructor:
+			Static Method for Creating CsvBuilder with Multiple DataTables:
+			CsvBuilder csvBuilder = CsvBuilder.Datasets(dataTable1, dataTable2, ...);
 
-Building CSV:
-csvBuilder.Build(tableIndex1, tableIndex2, ...)
-Customizing Value Rendering:
+			Building CSV:
+			csvBuilder.Build(tableIndex1, tableIndex2, ...)
+			Customizing Value Rendering:
 
-Subscribe to the ValueRenderEvent to define custom parsing logic for column and row values.
+			Subscribe to the ValueRenderEvent to define custom parsing logic for column and row values.
 
-Output Handling:
-Obtain the CSV content as a Stream:
-Stream csvStream = csvBuilder.GetStream();
-Save the CSV content to a file:
+			Output Handling:
+			Obtain the CSV content as a Stream:
+			Stream csvStream = csvBuilder.GetStream();
+			Save the CSV content to a file:
 
-csvBuilder.SaveAsFile("filePath.csv");
+			csvBuilder.SaveAsFile("filePath.csv");
 
-Example #1:
+			Example #1:
 
-// Create CsvBuilder with a DataSet
-ICsvBuilder csvBuilder = CsvBuilder.Datasets(dataSet);
+			// Create CsvBuilder with a DataSet
+			ICsvBuilder csvBuilder = CsvBuilder.Datasets(dataSet);
 
-// Build CSV with selected columns from specific DataTables
-ICsvExtractor csvExtractor = csvBuilder.Build();
+			// Build CSV with selected columns from specific DataTables
+			ICsvExtractor csvExtractor = csvBuilder.Build();
 
-// Obtain CSV content as a Stream
-MemoryStream csvStream = csvExtractor.GetStream();
+			// Obtain CSV content as a Stream
+			MemoryStream csvStream = csvExtractor.GetStream();
 
-// Save CSV content to a file
-csvExtractor.SaveAsFile("output.csv");
+			// Save CSV content to a file
+			csvExtractor.SaveAsFile("output.csv");
 
-//dispose if necessary
-csvBuilder.Dispose();
-This utility simplifies the process of CSV generation, providing users with a flexible and efficient solution for working with tabular data in the .NET environment.</description>
+			//dispose if necessary
+			csvBuilder.Dispose();
+			This utility simplifies the process of CSV generation, providing users with a flexible and efficient solution for working with tabular data in the .NET environment.</description>
     <copyright>CsvBuilder Utility © 2023 Samer Shahbaz. All rights reserved.</copyright>
     <repository type="git" url="https://github.com/GoWorkPro/CSV-Builder.git" />
     <dependencies>
-      <group targetFramework="net5.0" />
+      <group targetFramework=".NETStandard2.1" />
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Users\samer.shahbaz\Source\Repos\CSV-Builder\Samer.CsvBuilder\bin\Release\net5.0\GoWorkPro.CsvBuilder.dll" target="lib\net5.0\GoWorkPro.CsvBuilder.dll" />
+    <file src="C:\Users\samer.shahbaz\source\repos\CSV-Builder\Samer.CsvBuilder\bin\Release\netstandard2.1\GoWorkPro.CsvBuilder.dll" target="lib\netstandard2.1\GoWorkPro.CsvBuilder.dll" />
     <file src="C:\Users\samer.shahbaz\Desktop\README.md" target="\README.md" />
     <file src="C:\Users\samer.shahbaz\Downloads\favicon-1,favicon-2,favicon-3\favicon-3.png" target="\favicon-3.png" />
   </files>

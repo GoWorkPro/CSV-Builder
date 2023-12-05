@@ -1,12 +1,24 @@
 {
   "version": 2,
-  "dgSpecHash": "BAzI7lSDkpW4VWbrYWKePw4UpoOtVn0rhW/7bmZhGZTn/upC/5kAmE0TWNWRZsvbwXl8/PKE7HnLdxnVcaEQMA==",
+  "dgSpecHash": "Pvrlx/dURbbaSvmSv7JY4/yLrctfzRkB5oCE/8yRiWoXO0NpIknPki+CjICuJfGebwRPoZM6QXXftN7XsNZWZw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
+  "projectFilePath": "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.5.3\\system.runtime.compilerservices.unsafe.4.5.3.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\system.security.accesscontrol\\5.0.0\\system.security.accesscontrol.5.0.0.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\system.security.cryptography.protecteddata\\8.0.0\\system.security.cryptography.protecteddata.8.0.0.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
     "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\5.0.0\\microsoft.windowsdesktop.app.ref.5.0.0.nupkg.sha512",
     "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.netcore.app.ref\\5.0.0\\microsoft.netcore.app.ref.5.0.0.nupkg.sha512",
-    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\5.0.0\\microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\5.0.0\\microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.20\\microsoft.windowsdesktop.app.ref.6.0.20.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.20\\microsoft.netcore.app.ref.6.0.20.nupkg.sha512",
+    "C:\\Users\\samer.shahbaz\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.20\\microsoft.aspnetcore.app.ref.6.0.20.nupkg.sha512"
   ],
   "logs": []
 }
