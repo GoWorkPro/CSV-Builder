@@ -1,24 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj": {}
+    "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj": {}
   },
   "projects": {
-    "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj": {
-      "version": "1.0.0",
+    "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj": {
+      "version": "3.0.1",
       "restore": {
-        "projectUniqueName": "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
+        "projectUniqueName": "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
         "projectName": "GoWorkPro.CsvBuilder",
-        "projectPath": "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
+        "projectPath": "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
         "packagesPath": "C:\\Users\\samer.shahbaz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\samer.shahbaz\\Source\\Repos\\CSV-Builder\\Samer.CsvBuilder\\obj\\",
+        "outputPath": "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\obj\\",
         "projectStyle": "PackageReference",
+        "crossTargeting": true,
         "configFilePaths": [
           "C:\\Users\\samer.shahbaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net5.0"
+          "net5",
+          "net6",
+          "netstandard2.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -26,7 +29,15 @@
         },
         "frameworks": {
           "net5.0": {
-            "targetAlias": "net5.0",
+            "targetAlias": "net5",
+            "projectReferences": {}
+          },
+          "net6.0": {
+            "targetAlias": "net6",
+            "projectReferences": {}
+          },
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
             "projectReferences": {}
           }
         },
@@ -38,7 +49,17 @@
       },
       "frameworks": {
         "net5.0": {
-          "targetAlias": "net5.0",
+          "targetAlias": "net5",
+          "dependencies": {
+            "Microsoft.Win32.Registry": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "System.Security.Cryptography.ProtectedData": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -66,6 +87,80 @@
           ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        },
+        "net6.0": {
+          "targetAlias": "net6",
+          "dependencies": {
+            "Microsoft.Win32.Registry": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "System.Security.Cryptography.ProtectedData": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.20, 6.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.20, 6.0.20]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.20, 6.0.20]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        },
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Microsoft.Win32.Registry": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "System.Security.Cryptography.ProtectedData": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
               "privateAssets": "all"
             }
           },

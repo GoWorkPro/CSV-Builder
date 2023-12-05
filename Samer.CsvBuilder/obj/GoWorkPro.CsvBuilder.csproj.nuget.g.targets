@@ -1,2 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" />
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net5' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)system.security.cryptography.protecteddata\8.0.0\buildTransitive\netcoreapp2.0\System.Security.Cryptography.ProtectedData.targets" Condition="Exists('$(NuGetPackageRoot)system.security.cryptography.protecteddata\8.0.0\buildTransitive\netcoreapp2.0\System.Security.Cryptography.ProtectedData.targets')" />
+  </ImportGroup>
+</Project>
