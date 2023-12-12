@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.ComponentModel.Design;
 
 namespace GoWorkPro.CsvBuilder
 {
@@ -216,7 +217,7 @@ namespace GoWorkPro.CsvBuilder
         /// <param name="filePath">The path to the CSV file to be read.</param>
         /// <param name="readTillCriteria">A lambda expression defining the condition to continue reading rows.</param>
         /// <returns>An ICsvExtractor representing the constructed DataSet based on the file content.</returns>
-        public static ICsvExtractor ReadFileWhile(string filePath, Func<ReadCriteria, bool> readTillCriteria)
+        public static ICsvExtractor ReadFileTill(string filePath, Func<ReadCriteria, bool> readTillCriteria)
         {
             // Read all lines from the CSV file
             var csvData = File.ReadAllLines(filePath);
@@ -229,12 +230,12 @@ namespace GoWorkPro.CsvBuilder
                 var dataTable = new DataTable();
 
                 // Iterate through each line in the CSV data
-                for (var i = 1; i <= csvData.Length; i++)
+                for (var rowNumber = 1; rowNumber <= csvData.Length; rowNumber++)
                 {
-                    var rowValues = csvData[i - 1].Split(',');
+                    var rowValues = csvData[rowNumber - 1].Split(',');
 
                     // Create criteria with the current row number
-                    var criteria = new ReadCriteria { RowNumber = i };
+                    var criteria = new ReadCriteria() { RowNumber = rowNumber };
 
                     // Adjust the number of columns if necessary
                     while (rowValues.Length > dataTable.Columns.Count)
@@ -252,6 +253,14 @@ namespace GoWorkPro.CsvBuilder
 
                         // Set the current cell value in the criteria for potential user-defined conditions
                         criteria.Value = value;
+                        {
+                            // Check the user-defined condition for breaking the loop
+                            if (readTillCriteria.Invoke(criteria))
+                            {
+                                isBreaked = true;
+                                break;
+                            }
+                        }
                     }
 
                     // Add the row to the DataTable if there are cell values
@@ -280,7 +289,13 @@ namespace GoWorkPro.CsvBuilder
             // Return an ICsvExtractor representing the constructed DataSet
             return new CsvBuilder(dataset);
         }
-        public DataTable[] ToDataTables(KeyValuePair<Func<ReadCriteria, bool>, Func<ReadCriteria, bool>>[] startAndEndCriterias)
+
+        public DataTable[] ToDataTables(params StartEndCriteria[] startAndEndCriterias)
+        {
+            return this.ToDataTables(false, startAndEndCriterias);
+        }
+
+        public DataTable[] ToDataTables(bool skipMatchCriteriaValue, params StartEndCriteria[] startAndEndCriterias)
         {
             var dataTables = new List<DataTable>();
 
@@ -291,10 +306,11 @@ namespace GoWorkPro.CsvBuilder
 
             var tableToRead = _dataset.Tables[0];
 
-            foreach (var startEndCriteria in startAndEndCriterias)
+            var lockObject = new object();
+            Parallel.ForEach(startAndEndCriterias, (startEndCriteria) =>
             {
-                var startCriteria = startEndCriteria.Key;
-                var endCriteria = startEndCriteria.Value;
+                var startCriteria = startEndCriteria.StartCriteria;
+                var endCriteria = startEndCriteria.EndCriteria;
 
                 var dataTable = new DataTable();
                 var isReading = false;
@@ -305,11 +321,24 @@ namespace GoWorkPro.CsvBuilder
                 {
                     var rowValues = tableToRead.Rows[rowNumber - 1].ItemArray;
                     var cellValues = new string[rowValues.Length];
+                    var readCriteria = new ReadCriteria
+                    {
+                        RowNumber = rowNumber
+                    };
+
+                    while (rowValues.Length > dataTable.Columns.Count)
+                    {
+                        dataTable.Columns.Add(new DataColumn($"column{dataTable.Columns.Count + 1}"));
+                    }
+
+                    if (startCriteria.Invoke(readCriteria))
+                        isReading = true;
 
                     for (int columnNumber = 1; columnNumber <= rowValues.Length; columnNumber++)
                     {
                         var cellValue = rowValues[columnNumber - 1];
-                        var readCriteria = new ReadCriteria { RowNumber = rowNumber, Value = Convert.ToString(cellValue) };
+
+                        readCriteria.Value = Convert.ToString(cellValue);
 
                         // Check if the start condition is met
                         if (!isReading && startCriteria.Invoke(readCriteria))
@@ -319,7 +348,7 @@ namespace GoWorkPro.CsvBuilder
 
                         if (isReading)
                         {
-                            cellValues.Append(cellValue);
+                            cellValues[columnNumber - 1] = Convert.ToString(cellValue);
                         }
 
                         // Check if the end condition is met
@@ -333,17 +362,34 @@ namespace GoWorkPro.CsvBuilder
 
                     if (cellValues.Length > 0)
                     {
-                        var row = dataTable.NewRow();
-                        row.ItemArray = cellValues;
-                        dataTable.Rows.Add(row);
+                        if ((startCriteria.Invoke(readCriteria) || endCriteria.Invoke(readCriteria)) && skipMatchCriteriaValue)
+                        {
+                        }
+                        else
+                        {
+                            var row = dataTable.NewRow();
+                            row.ItemArray = cellValues;
+                            dataTable.Rows.Add(row);
+                        }
+                    }
+
+                    // Check if the end condition is met
+                    if (isReading && endCriteria.Invoke(readCriteria))
+                    {
+                        isReading = false;
+                        isBreaked = true;
+                        break; // Exit the loop once end condition is met
                     }
 
                     if (isBreaked)
                         break;
                 }
 
-                dataTables.Add(dataTable);
-            }
+                lock (lockObject)
+                {
+                    dataTables.Add(dataTable);
+                }
+            });
 
             return dataTables.ToArray();
         }

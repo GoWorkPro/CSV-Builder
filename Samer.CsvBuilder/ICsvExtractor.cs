@@ -13,8 +13,8 @@ namespace GoWorkPro.CsvBuilder
         MemoryStream GetStream();
         void SaveAsFile(string filePath);
 
-        DataTable[] ToDataTables(KeyValuePair<Func<ReadCriteria, bool>, Func<ReadCriteria, bool>>[] startAndEndCriterias);
-
+        DataTable[] ToDataTables(params StartEndCriteria[] startAndEndCriterias);
+        DataTable[] ToDataTables(bool skipMatchCriteriaValue, params StartEndCriteria[] startAndEndCriterias);
         /// <summary>
         /// It expects the column number and row number to modify value at specific point, column number and row number start At 1
         /// </summary>
