@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.ComponentModel.Design;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 
 namespace GoWorkPro.CsvBuilder
 {
@@ -22,6 +24,8 @@ namespace GoWorkPro.CsvBuilder
         readonly DataSet _dataset;
         readonly MemoryStream _stream;
         private StreamWriter _streamWriter { set; get; }
+        private StreamReader? _streamReader { get; set; }
+
         public delegate string ValueParser(string value, ValueType type, int column, int row, int tableIndex, int actualRow);
         bool _isBuild;
         /// <summary>
@@ -152,6 +156,7 @@ namespace GoWorkPro.CsvBuilder
         {
             GC.SuppressFinalize(this);
             _stream?.Dispose();
+            _streamReader = null;
         }
 
         public MemoryStream GetStream() { _datasetsToStream(); _streamWriter.Flush(); _streamWriter.BaseStream.Position = 0; return (MemoryStream)_streamWriter.BaseStream; }
@@ -304,6 +309,12 @@ namespace GoWorkPro.CsvBuilder
                 return Array.Empty<DataTable>();
             }
 
+            if (startAndEndCriterias.Length <= 0)
+            {
+                Array.Resize(ref startAndEndCriterias, 1);
+                startAndEndCriterias[0] = new StartEndCriteria();
+            }
+
             var tableToRead = _dataset.Tables[0];
 
             var lockObject = new object();
@@ -331,7 +342,7 @@ namespace GoWorkPro.CsvBuilder
                         dataTable.Columns.Add(new DataColumn($"column{dataTable.Columns.Count + 1}"));
                     }
 
-                    if (startCriteria.Invoke(readCriteria))
+                    if (startCriteria == null || startCriteria.Invoke(readCriteria))
                         isReading = true;
 
                     for (int columnNumber = 1; columnNumber <= rowValues.Length; columnNumber++)
@@ -341,7 +352,7 @@ namespace GoWorkPro.CsvBuilder
                         readCriteria.Value = Convert.ToString(cellValue);
 
                         // Check if the start condition is met
-                        if (!isReading && startCriteria.Invoke(readCriteria))
+                        if (startCriteria == null || (!isReading && startCriteria.Invoke(readCriteria)))
                         {
                             isReading = true;
                         }
@@ -352,7 +363,7 @@ namespace GoWorkPro.CsvBuilder
                         }
 
                         // Check if the end condition is met
-                        if (isReading && endCriteria.Invoke(readCriteria))
+                        if (endCriteria != null && isReading && endCriteria.Invoke(readCriteria))
                         {
                             isReading = false;
                             isBreaked = true;
@@ -362,10 +373,11 @@ namespace GoWorkPro.CsvBuilder
 
                     if (cellValues.Length > 0)
                     {
-                        if ((startCriteria.Invoke(readCriteria) || endCriteria.Invoke(readCriteria)) && skipMatchCriteriaValue)
+                        var skipingValueCriteria = new ReadCriteria { RowNumber = readCriteria.RowNumber, Value = cellValues.FirstOrDefault() };
+                        if (startCriteria != null && (startCriteria.Invoke(skipingValueCriteria) || endCriteria != null && endCriteria.Invoke(skipingValueCriteria)) && skipMatchCriteriaValue)
                         {
                         }
-                        else
+                        else if (isReading)
                         {
                             var row = dataTable.NewRow();
                             row.ItemArray = cellValues;
@@ -374,7 +386,7 @@ namespace GoWorkPro.CsvBuilder
                     }
 
                     // Check if the end condition is met
-                    if (isReading && endCriteria.Invoke(readCriteria))
+                    if (endCriteria != null && isReading && endCriteria.Invoke(readCriteria))
                     {
                         isReading = false;
                         isBreaked = true;
@@ -433,6 +445,16 @@ namespace GoWorkPro.CsvBuilder
             dataTable.Rows[rowNumber - 1].ItemArray = values;
         }
 
-
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            _streamReader = new StreamReader(GetStream());
+            while (!_streamReader.EndOfStream)
+            {
+                var line = _streamReader.ReadLine();
+                stringBuilder.AppendLine(line);
+            }
+            return stringBuilder.ToString();
+        }
     }
 }
