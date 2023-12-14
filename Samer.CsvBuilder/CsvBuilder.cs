@@ -72,6 +72,11 @@ namespace GoWorkPro.CsvBuilder
             this._options = options;
         }
 
+        /// <summary>
+        /// Creates a CSV builder from an array of DataTables.
+        /// </summary>
+        /// <param name="dataTables">An array of DataTable instances representing the data to be included in the CSV builder.</param>
+        /// <returns>An instance of <see cref="ICsvBuilder"/> configured with the provided DataTables.</returns>
         public static ICsvBuilder Datasets(params DataTable[] dataTables)
         {
             var reArrangedDataset = new DataSet();
@@ -84,6 +89,11 @@ namespace GoWorkPro.CsvBuilder
             return new CsvBuilder(reArrangedDataset);
         }
 
+        /// <summary>
+        /// Creates a CSV builder from a DataSet.
+        /// </summary>
+        /// <param name="dataSet">A DataSet containing DataTables representing the data to be included in the CSV builder.</param>
+        /// <returns>An instance of <see cref="ICsvBuilder"/> configured with the DataTables from the provided DataSet.</returns>
         public static ICsvBuilder Datasets(DataSet dataSet)
         {
             if (dataSet.Tables.Count == 0)
@@ -91,11 +101,22 @@ namespace GoWorkPro.CsvBuilder
             return new CsvBuilder(dataSet);
         }
 
+        /// <summary>
+        /// Creates a CSV builder from an array of lists of strings.
+        /// </summary>
+        /// <param name="rows">An array of lists of strings representing the data to be included in the CSV builder.</param>
+        /// <returns>An instance of <see cref="ICsvBuilder"/> configured with the provided lists of strings.</returns>
         public static ICsvBuilder Datasets(params List<string>[] rows)
         {
             return Datasets(new Options(), rows);
         }
 
+        /// <summary>
+        /// Creates a CSV builder from an array of lists of strings with the specified options for processing.
+        /// </summary>
+        /// <param name="options">Options specifying how the CSV data should be handled during building.</param>
+        /// <param name="rows">An array of lists of strings representing the data to be included in the CSV builder.</param>
+        /// <returns>An instance of <see cref="ICsvBuilder"/> configured with the provided options and lists of strings.</returns>
         public static ICsvBuilder Datasets(Options options, params List<string>[] rows)
         {
             var rowsAfterSperators = rows.Select(x => string.Join(options.Separator, x)).Where(x => options.RemoveEmptyRows && !string.IsNullOrWhiteSpace(x) || !options.RemoveEmptyRows).Skip(options.SkipInitialNumberOfRows).ToArray();
@@ -190,6 +211,12 @@ namespace GoWorkPro.CsvBuilder
             _streamWriter.BaseStream.CopyTo(fileStream);
         }
 
+        /// <summary>
+        /// Reads CSV data from a file with the specified options for processing.
+        /// </summary>
+        /// <param name="filePath">The path to the file containing the CSV data.</param>
+        /// <param name="options">Options specifying how the CSV data should be handled during extraction.</param>
+        /// <returns>An instance of <see cref="ICsvExtractor"/> configured based on the CSV data from the file and options.</returns>
         public static ICsvExtractor ReadFile(string filePath, Options options)
         {
             var csvData = File.ReadAllText(filePath);
@@ -457,6 +484,10 @@ namespace GoWorkPro.CsvBuilder
             dataTable.Rows[rowNumber - 1].ItemArray = values;
         }
 
+        /// <summary>
+        /// Returns a string representation of the CSV extractor.
+        /// </summary>
+        /// <returns>A string representing the CSV extractor and its current state.</returns>
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
@@ -469,6 +500,11 @@ namespace GoWorkPro.CsvBuilder
             return stringBuilder.ToString();
         }
 
+        /// <summary>
+        /// Converts the contents of an Excel file to a CSV extractor.
+        /// </summary>
+        /// <param name="excelFilePath">The path to the Excel file to be converted.</param>
+        /// <returns>An instance of <see cref="ICsvExtractor"/> containing the data from the Excel file in CSV format.</returns>
         public static ICsvExtractor ReadExcelFileToCsv(string excelFilePath)
         {
             var dataset = new DataSet();
@@ -501,11 +537,22 @@ namespace GoWorkPro.CsvBuilder
             }
         }
 
+        /// <summary>
+        /// Creates a CSV extractor from a CSV-formatted string without any specific processing options.
+        /// </summary>
+        /// <param name="csv">The CSV-formatted string to be processed.</param>
+        /// <returns>An instance of <see cref="ICsvExtractor"/> with default options based on the provided CSV data.</returns>
         public static ICsvExtractor ReadFromText(string csv)
         {
             return ReadFromText(csv, new Options());
         }
 
+        /// <summary>
+        /// Creates a CSV extractor from a CSV-formatted string with the specified options for processing.
+        /// </summary>
+        /// <param name="csvData">The CSV-formatted string to be processed.</param>
+        /// <param name="options">Options specifying how the CSV data should be handled during extraction.</param>
+        /// <returns>An instance of <see cref="ICsvExtractor"/> configured based on the provided CSV data and options.</returns>
         public static ICsvExtractor ReadFromText(string csvData, Options options)
         {
             // Split the CSV string into rows
