@@ -10,6 +10,8 @@ using System.Linq.Expressions;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace GoWorkPro.CsvBuilder
 {
@@ -23,6 +25,8 @@ namespace GoWorkPro.CsvBuilder
     {
         readonly DataSet _dataset;
         readonly MemoryStream _stream;
+        private readonly Options _options;
+
         private StreamWriter _streamWriter { set; get; }
         private StreamReader? _streamReader { get; set; }
 
@@ -49,11 +53,23 @@ namespace GoWorkPro.CsvBuilder
 
         private ValueParser? _valueRenderEvent;
 
-        private CsvBuilder(DataSet dataset)
+        private CsvBuilder()
         {
-            _dataset = dataset;
+            _dataset = new DataSet();
+            _options = new Options();
             _stream = new MemoryStream();
             _streamWriter = new StreamWriter(_stream);
+        }
+
+        private CsvBuilder(DataSet dataset) : this()
+        {
+            _dataset = dataset;
+        }
+
+        private CsvBuilder(Options options, params DataTable[] tables) : this()
+        {
+            _dataset.Tables.AddRange(tables);
+            this._options = options;
         }
 
         public static ICsvBuilder Datasets(params DataTable[] dataTables)
@@ -77,26 +93,13 @@ namespace GoWorkPro.CsvBuilder
 
         public static ICsvBuilder Datasets(params List<string>[] rows)
         {
-            DataSet dataSet = new DataSet();
-            int maxColumns = (from x in rows
-                              select x.Count into x
-                              orderby x descending
-                              select x).FirstOrDefault();
-            DataTable dataTable = new DataTable();
-            for (int i = 0; i < maxColumns; i++)
-            {
-                dataTable.Columns.Add(new DataColumn("column" + i + 1));
-            }
+            return Datasets(new Options(), rows);
+        }
 
-            foreach (List<string> source in rows)
-            {
-                DataRowCollection rows2 = dataTable.Rows;
-                object[] values = source.Select((string x) => x).ToArray();
-                rows2.Add(values);
-            }
-
-            dataSet.Tables.Add(dataTable);
-            return new CsvBuilder(dataSet);
+        public static ICsvBuilder Datasets(Options options, params List<string>[] rows)
+        {
+            var rowsAfterSperators = rows.Select(x => string.Join(options.Separator, x)).Where(x => options.RemoveEmptyRows && !string.IsNullOrWhiteSpace(x) || !options.RemoveEmptyRows).Skip(options.SkipInitialNumberOfRows).ToArray();
+            return new CsvBuilder(options, parseIntoTable(options, rowsAfterSperators));
         }
 
         public ICsvExtractor Build(params int[] columnsTobePresentedForTableIndex)
@@ -107,8 +110,11 @@ namespace GoWorkPro.CsvBuilder
             var actualRow = 1;
             foreach (DataTable dataTable in _dataset.Tables)
             {
+                if (tableIndex > 0)
+                    _streamWriter.Write($"////////(Table Number {tableIndex + 1} Start)////////" + _options.NewLine);
+
                 var rowNumber = 1;
-                if (columnsTobePresentedForTableIndex.Contains(tableIndex))
+                if (columnsTobePresentedForTableIndex.Contains(tableIndex) || _options.HeaderMode == HeaderMode.HeaderPresent)
                 {
                     var columns = new List<string>();
                     var columnNumber = 1;
@@ -121,7 +127,7 @@ namespace GoWorkPro.CsvBuilder
                         columnNumber++;
                     }
                     // Concatenate each column value with a comma
-                    _streamWriter.WriteLine(string.Join(",", columns));
+                    _streamWriter.Write(string.Join(_options.Separator, columns) + _options.NewLine);
                     rowNumber++;
                     actualRow++;
                 }
@@ -142,7 +148,7 @@ namespace GoWorkPro.CsvBuilder
                         }
                         columnNumber++;
                     }
-                    _streamWriter.WriteLine(string.Join(",", rowValues));
+                    _streamWriter.Write(string.Join(_options.Separator, rowValues) + _options.NewLine);
                     rowNumber++;
                     actualRow++;
                 }
@@ -184,35 +190,10 @@ namespace GoWorkPro.CsvBuilder
             _streamWriter.BaseStream.CopyTo(fileStream);
         }
 
-        public static ICsvExtractor ReadFile(string filePath)
+        public static ICsvExtractor ReadFile(string filePath, Options options)
         {
-            var csvData = File.ReadAllLines(filePath);
-            var dataset = new DataSet();
-
-            if (csvData.Length > 0)
-            {
-                var dataTable = new DataTable();
-
-                for (var i = 1; i <= csvData.Length; i++)
-                {
-                    var rowValues = csvData[i - 1].Split(',');
-
-                    // Adjust the number of columns if necessary
-                    while (rowValues.Length > dataTable.Columns.Count)
-                    {
-                        dataTable.Columns.Add(new DataColumn($"column{dataTable.Columns.Count + 1}"));
-                    }
-
-                    // Truncate or pad the row values to match the number of columns
-                    Array.Resize(ref rowValues, dataTable.Columns.Count);
-
-                    var row = dataTable.NewRow();
-                    row.ItemArray = rowValues;
-                    dataTable.Rows.Add(row);
-                }
-                dataset.Tables.Add(dataTable);
-            }
-            return new CsvBuilder(dataset);
+            var csvData = File.ReadAllText(filePath);
+            return ReadFromText(csvData, options);
         }
 
         /// <summary>
@@ -222,75 +203,105 @@ namespace GoWorkPro.CsvBuilder
         /// <param name="filePath">The path to the CSV file to be read.</param>
         /// <param name="readTillCriteria">A lambda expression defining the condition to continue reading rows.</param>
         /// <returns>An ICsvExtractor representing the constructed DataSet based on the file content.</returns>
-        public static ICsvExtractor ReadFileTill(string filePath, Func<ReadCriteria, bool> readTillCriteria)
+        public static ICsvExtractor ReadFileTill(string filePath, Func<ReadCriteria, bool> readTillCriteria, Options options)
         {
             // Read all lines from the CSV file
-            var csvData = File.ReadAllLines(filePath);
-
+            var csvData = File.ReadAllText(filePath);
             var dataset = new DataSet();
             var isBreaked = false;
+            var dataTable = new DataTable();
 
-            if (csvData.Length > 0)
+            string[] rows = csvData.Split(new[] { options.NewLine }, options.RemoveEmptyRows ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None).Skip(options.SkipInitialNumberOfRows).ToArray();
+
+            // Determine the starting index based on HeaderMode
+            int startIndex = options.HeaderMode == HeaderMode.HeaderPresent ? 1 : 0;
+
+            // Process the header row if HeaderMode is HeaderPresent
+            if (options.HeaderMode == HeaderMode.HeaderPresent && rows.Length > 0)
             {
-                var dataTable = new DataTable();
+                // Split the header row into cells based on the separator
+                string[] headerCells = rows[0].Split(options.Separator);
 
-                // Iterate through each line in the CSV data
-                for (var rowNumber = 1; rowNumber <= csvData.Length; rowNumber++)
+                // Add columns to the DataTable based on the header cells
+                foreach (string headerCell in headerCells)
                 {
-                    var rowValues = csvData[rowNumber - 1].Split(',');
-
-                    // Create criteria with the current row number
-                    var criteria = new ReadCriteria() { RowNumber = rowNumber };
-
-                    // Adjust the number of columns if necessary
-                    while (rowValues.Length > dataTable.Columns.Count)
-                    {
-                        dataTable.Columns.Add(new DataColumn($"column{dataTable.Columns.Count + 1}"));
-                    }
-
-                    var rowCells = new string[rowValues.Length];
-
-                    // Iterate through each column in the current row
-                    for (int columnNumber = 1; columnNumber <= rowValues.Length; columnNumber++)
-                    {
-                        var value = rowValues[columnNumber - 1];
-                        rowCells[columnNumber - 1] = value;
-
-                        // Set the current cell value in the criteria for potential user-defined conditions
-                        criteria.Value = value;
-                        {
-                            // Check the user-defined condition for breaking the loop
-                            if (readTillCriteria.Invoke(criteria))
-                            {
-                                isBreaked = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    // Add the row to the DataTable if there are cell values
-                    if (rowCells.Length > 0)
-                    {
-                        var row = dataTable.NewRow();
-                        row.ItemArray = rowCells;
-                        dataTable.Rows.Add(row);
-                    }
-
-                    // Check the user-defined condition for breaking the loop
-                    if (readTillCriteria.Invoke(criteria))
-                    {
-                        isBreaked = true;
-                    }
-
-                    // Break the loop if the condition is met
-                    if (isBreaked)
-                        break;
+                    dataTable.Columns.Add(headerCell.Trim());
                 }
-
-                // Add the DataTable to the DataSet
-                dataset.Tables.Add(dataTable);
             }
 
+
+            // Iterate through each line in the CSV data
+            for (var rowNumber = startIndex; rowNumber < rows.Length; rowNumber++)
+            {
+                var rowValues = rows[rowNumber].Split(options.Separator);
+
+                // Create criteria with the current row number
+                var criteria = new ReadCriteria() { RowNumber = rowNumber + 1 };
+
+                // Adjust the number of columns if necessary
+                while (rowValues.Length > dataTable.Columns.Count)
+                {
+                    dataTable.Columns.Add(new DataColumn($"Column {dataTable.Columns.Count + 1}"));
+                }
+
+                var rowCells = new string[rowValues.Length];
+                if (readTillCriteria.Invoke(criteria))
+                {
+                    isBreaked = true;
+                    break;
+                }
+                // Iterate through each column in the current row
+                for (int columnNumber = 1; columnNumber <= rowValues.Length; columnNumber++)
+                {
+                    var value = rowValues[columnNumber - 1];
+                    rowCells[columnNumber - 1] = value;
+
+                    // Set the current cell value in the criteria for potential user-defined conditions
+                    criteria.Value = value;
+                    {
+                        // Check the user-defined condition for breaking the loop
+                        if (readTillCriteria.Invoke(criteria))
+                        {
+                            isBreaked = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Add the row to the DataTable if there are cell values
+                if (rowCells.Length > 0)
+                {
+                    // Optionally trim data
+                    if (options.TrimData)
+                    {
+                        rowCells = rowCells.Select(cell => cell.Trim()).ToArray();
+                    }
+
+                    // Check if the row should be skipped based on the SkipRow delegate
+                    if (options.SkipRow != null && options.SkipRow.Invoke(string.Join(options.Separator, rowCells), rowNumber))
+                    {
+                        continue; // Skip the current row
+                    }
+
+                    var row = dataTable.NewRow();
+                    row.ItemArray = rowCells;
+                    dataTable.Rows.Add(row);
+                }
+
+                // Check the user-defined condition for breaking the loop
+                if (readTillCriteria.Invoke(criteria))
+                {
+                    isBreaked = true;
+                }
+
+                // Break the loop if the condition is met
+                if (isBreaked)
+                    break;
+
+                
+            }
+            // Add the DataTable to the DataSet
+            dataset.Tables.Add(dataTable);
             // Return an ICsvExtractor representing the constructed DataSet
             return new CsvBuilder(dataset);
         }
@@ -311,8 +322,9 @@ namespace GoWorkPro.CsvBuilder
 
             if (startAndEndCriterias.Length <= 0)
             {
-                Array.Resize(ref startAndEndCriterias, 1);
-                startAndEndCriterias[0] = new StartEndCriteria();
+                var tables = new DataTable[_dataset.Tables.Count];
+                _dataset.Tables.CopyTo(tables, 0);
+                return tables;
             }
 
             var tableToRead = _dataset.Tables[0];
@@ -339,7 +351,7 @@ namespace GoWorkPro.CsvBuilder
 
                     while (rowValues.Length > dataTable.Columns.Count)
                     {
-                        dataTable.Columns.Add(new DataColumn($"column{dataTable.Columns.Count + 1}"));
+                        dataTable.Columns.Add(new DataColumn($"Column {dataTable.Columns.Count + 1}"));
                     }
 
                     if (startCriteria == null || startCriteria.Invoke(readCriteria))
@@ -455,6 +467,105 @@ namespace GoWorkPro.CsvBuilder
                 stringBuilder.AppendLine(line);
             }
             return stringBuilder.ToString();
+        }
+
+        public static ICsvExtractor ReadExcelFileToCsv(string excelFilePath)
+        {
+            var dataset = new DataSet();
+            using (var workbook = new XLWorkbook(excelFilePath))
+            {
+                foreach (var worksheet in workbook.Worksheets)
+                {
+                    var dataTable = new DataTable();
+                    var range = worksheet.RangeUsed();
+                    foreach (var row in range.RowsUsed())
+                    {
+                        var values = row.CellsUsed().Select(cell => cell.GetString()).ToArray();
+
+                        while (values.Length > dataTable.Columns.Count)
+                        {
+                            dataTable.Columns.Add(new DataColumn($"column{dataTable.Columns.Count + 1}"));
+                        }
+
+                        // Truncate or pad the row values to match the number of columns
+                        Array.Resize(ref values, dataTable.Columns.Count);
+
+                        var dataTableRow = dataTable.NewRow();
+                        dataTableRow.ItemArray = values;
+                        dataTable.Rows.Add(dataTableRow);
+                    }
+
+                    dataset.Tables.Add(dataTable);
+                }
+                return new CsvBuilder(dataset);
+            }
+        }
+
+        public static ICsvExtractor ReadFromText(string csv)
+        {
+            return ReadFromText(csv, new Options());
+        }
+
+        public static ICsvExtractor ReadFromText(string csvData, Options options)
+        {
+            // Split the CSV string into rows
+            string[] rows = csvData.Split(new[] { options.NewLine }, options.RemoveEmptyRows ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None).Skip(options.SkipInitialNumberOfRows).ToArray();
+            return new CsvBuilder(options, parseIntoTable(options, rows));
+        }
+
+        static DataTable parseIntoTable(Options options, string[] rows)
+        {
+            // Create a DataTable to hold the CSV data
+            DataTable dataTable = new DataTable();
+
+            // Determine the starting index based on HeaderMode
+            int startIndex = options.HeaderMode == HeaderMode.HeaderPresent ? 1 : 0;
+
+            // Process the header row if HeaderMode is HeaderPresent
+            if (options.HeaderMode == HeaderMode.HeaderPresent && rows.Length > 0)
+            {
+                // Split the header row into cells based on the separator
+                string[] headerCells = rows[0].Split(options.Separator);
+
+                // Add columns to the DataTable based on the header cells
+                foreach (string headerCell in headerCells)
+                {
+                    dataTable.Columns.Add(headerCell.Trim());
+                }
+            }
+
+            // Process the data rows and populate the DataTable
+            for (int i = startIndex; i < rows.Length; i++)
+            {
+                // Split the row into cells based on the separator
+                string[] cells = rows[i].Split(options.Separator);
+
+                while (cells.Length > dataTable.Columns.Count)
+                {
+                    dataTable.Columns.Add(new DataColumn($"Column {dataTable.Columns.Count + 1}"));
+                }
+
+                // Truncate or pad the row values to match the number of columns
+                Array.Resize(ref cells, dataTable.Columns.Count);
+
+                // Optionally trim data
+                if (options.TrimData)
+                {
+                    cells = cells.Select(cell => cell.Trim()).ToArray();
+                }
+
+                // Check if the row should be skipped based on the SkipRow delegate
+                if (options.SkipRow != null && options.SkipRow.Invoke(string.Join(options.Separator, cells), i))
+                {
+                    continue; // Skip the current row
+                }
+
+                // Add a new row to the DataTable and fill it with the cell values
+                DataRow dataRow = dataTable.NewRow();
+                dataRow.ItemArray = cells;
+                dataTable.Rows.Add(dataRow);
+            }
+            return dataTable;
         }
     }
 }
