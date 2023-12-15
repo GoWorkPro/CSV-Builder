@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GoWorkPro.CsvBuilder.CsvBuilder;
 
 namespace GoWorkPro.CsvBuilder
 {
@@ -59,5 +60,11 @@ namespace GoWorkPro.CsvBuilder
         /// </summary>
         /// <param name="rowNumber"></param>
         void SetRow(int rowNumber, object[] values);
+
+        /// <summary>
+        /// Occurs when a value needs to be rendered during the CSV building process.
+        /// Subscribers can provide custom logic to parse and render values.
+        /// </summary>
+        event ValueParser ValueRenderEvent;
     }
 }
