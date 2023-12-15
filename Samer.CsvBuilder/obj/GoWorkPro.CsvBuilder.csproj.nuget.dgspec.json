@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj": {
-      "version": "3.0.1",
+      "version": "4.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\samer.shahbaz\\source\\repos\\CSV-Builder\\Samer.CsvBuilder\\GoWorkPro.CsvBuilder.csproj",
         "projectName": "GoWorkPro.CsvBuilder",
@@ -51,6 +51,10 @@
         "net5.0": {
           "targetAlias": "net5",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.102.1, )"
+            },
             "Microsoft.Win32.Registry": {
               "target": "Package",
               "version": "[5.0.0, )"
@@ -95,6 +99,10 @@
         "net6.0": {
           "targetAlias": "net6",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.102.1, )"
+            },
             "Microsoft.Win32.Registry": {
               "target": "Package",
               "version": "[5.0.0, )"
@@ -139,6 +147,10 @@
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.102.1, )"
+            },
             "Microsoft.Win32.Registry": {
               "target": "Package",
               "version": "[5.0.0, )"

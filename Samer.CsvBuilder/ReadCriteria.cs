@@ -6,8 +6,7 @@ namespace GoWorkPro.CsvBuilder
 {
     public class ReadCriteria
     {
-        public int? ColumnNumber { get; set; }
         public int? RowNumber { get; set; }
-        public object? Value { get; set; }
+        public string? Value { get; set; }
     }
 }
