@@ -10,22 +10,21 @@
 		<Authors>Samer Shahbaz </Authors>
 		<Company>GoWorkPro</Company>
 		<Description>
-Very simple and Easy to use, convert datatables to CSV
+Very simple and Easy to use, convert Datatables to CSV or CSV to DataTables, Excel to CSV, Read CSV raw string, CSV file, Modification, Set Read Till  Criterias, Build CSV
 Author: Samer Shahbaz
 
 Create Date: 15/11/2023
 
 Description:
-The CsvBuilder utility, developed by Samer Shahbaz, is a powerful tool designed to simplify the process of creating CSV (Comma-Separated Values) files using .NET DataTables. This utility provides a convenient and efficient way to generate CSV data from one or more DataTables within a DataSet.
+The CsvBuilder utility, developed by Samer Shahbaz, is a powerful tool designed to simplify the process of creating CSV (Comma-Separated Values) files using .NET DataTables or Customely. This utility provides a convenient and efficient way to generate/read CSV data.
 
 Key Features:
+Simplicity: Designed for ease of use, providing a straightforward and user-friendly experience.
+Customizable Options: Offers flexibility with customizable processing options for CSV data.
+Excel Conversion: Seamlessly converts Excel files to CSV, enhancing data interoperability.
+Versatile Construction: Datasets methods and GetValue function accommodate diverse data structures for CSV construction.
 
-DataSet Integration: Accepts a DataSet as input, allowing the user to aggregate multiple DataTables for CSV creation.
-Flexible Value Rendering: Supports a customizable event, ValueRenderEvent, which allows users to define a custom parser for values based on their data type (column or row).
-Multiple DataTable Support: Enables the user to selectively include columns from different DataTables by specifying the table index.
-Stream Handling: The utility efficiently manages memory streams to optimize CSV generation.
-Dispose Method: Implements the IDisposable interface for proper resource management.
-Usage:
+Usage Examples:
 
 Constructor:
 Static Method for Creating CsvBuilder with Multiple DataTables:
