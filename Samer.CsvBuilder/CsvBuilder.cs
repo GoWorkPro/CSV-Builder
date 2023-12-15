@@ -482,6 +482,7 @@ namespace GoWorkPro.CsvBuilder
             Array.Resize(ref values, dataTable.Columns.Count);
 
             dataTable.Rows[rowNumber - 1].ItemArray = values;
+            this._isBuild = false;
         }
 
         /// <summary>
@@ -520,7 +521,7 @@ namespace GoWorkPro.CsvBuilder
 
                         while (values.Length > dataTable.Columns.Count)
                         {
-                            dataTable.Columns.Add(new DataColumn($"column{dataTable.Columns.Count + 1}"));
+                            dataTable.Columns.Add(new DataColumn($"Column {dataTable.Columns.Count + 1}"));
                         }
 
                         // Truncate or pad the row values to match the number of columns
