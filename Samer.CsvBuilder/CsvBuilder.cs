@@ -131,8 +131,8 @@ namespace GoWorkPro.CsvBuilder
             var actualRow = 1;
             foreach (DataTable dataTable in _dataset.Tables)
             {
-                if (tableIndex > 0)
-                    _streamWriter.Write($"////////(Table Number {tableIndex + 1} Start)////////" + _options.NewLine);
+                //if (tableIndex > 0)
+                //    _streamWriter.Write($"////////(Table Number {tableIndex + 1} Start)////////" + _options.NewLine);
 
                 var rowNumber = 1;
                 if (columnsTobePresentedForTableIndex.Contains(tableIndex) || _options.HeaderMode == HeaderMode.HeaderPresent)

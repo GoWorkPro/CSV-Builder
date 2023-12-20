@@ -67,7 +67,7 @@ https://goworkpro.github.io/CSV-Builder-Utility/
 		<Copyright>CsvBuilder Utility © 2023 Samer Shahbaz. All rights reserved.</Copyright>
 		<PackageIcon>csv-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>4.0.1</Version>
+		<Version>4.0.2</Version>
 		<PackageProjectUrl>https://goworkpro.github.io/CSV-Builder-Utility/</PackageProjectUrl>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/GoWorkPro/CSV-Builder.git</RepositoryUrl>
