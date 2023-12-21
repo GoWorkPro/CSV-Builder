@@ -121,7 +121,7 @@ namespace GoWorkPro.CsvBuilder
         {
             var rowsAfterSperators = rows.Select(x => string.Join(options.Separator, x)).Where(x => options.RemoveEmptyRows && !string.IsNullOrWhiteSpace(x) || !options.RemoveEmptyRows).Skip(options.SkipInitialNumberOfRows).ToArray();
             return new CsvBuilder(options, parseIntoTable(options, rowsAfterSperators));
-        }
+        } 
 
         public ICsvExtractor Build(params int[] columnsTobePresentedForTableIndex)
         {
