@@ -29,7 +29,6 @@ namespace GoWorkPro.CsvBuilder
 
         private StreamWriter _streamWriter { set; get; }
         private StreamReader? _streamReader { get; set; }
-
         public delegate string ValueParser(string value, ValueType type, int column, int row, int tableIndex, int actualRow);
         bool _isBuild;
         /// <summary>
@@ -121,7 +120,7 @@ namespace GoWorkPro.CsvBuilder
         {
             var rowsAfterSperators = rows.Select(x => string.Join(options.Separator, x)).Where(x => options.RemoveEmptyRows && !string.IsNullOrWhiteSpace(x) || !options.RemoveEmptyRows).Skip(options.SkipInitialNumberOfRows).ToArray();
             return new CsvBuilder(options, parseIntoTable(options, rowsAfterSperators));
-        } 
+        }
 
         public ICsvExtractor Build(params int[] columnsTobePresentedForTableIndex)
         {
@@ -325,7 +324,7 @@ namespace GoWorkPro.CsvBuilder
                 if (isBreaked)
                     break;
 
-                
+
             }
             // Add the DataTable to the DataSet
             dataset.Tables.Add(dataTable);
@@ -561,6 +560,7 @@ namespace GoWorkPro.CsvBuilder
             return new CsvBuilder(options, parseIntoTable(options, rows));
         }
 
+        static object _syncRoot = new object();
         static DataTable parseIntoTable(Options options, string[] rows)
         {
             // Create a DataTable to hold the CSV data
@@ -573,7 +573,7 @@ namespace GoWorkPro.CsvBuilder
             if (options.HeaderMode == HeaderMode.HeaderPresent && rows.Length > 0)
             {
                 // Split the header row into cells based on the separator
-                string[] headerCells = rows[0].Split(options.Separator);
+                string[] headerCells = options.RowParser.Parse(rows[0], options, 1).ToArray();
 
                 // Add columns to the DataTable based on the header cells
                 foreach (string headerCell in headerCells)
@@ -582,19 +582,24 @@ namespace GoWorkPro.CsvBuilder
                 }
             }
 
+            var rowsResult = new List<string>[rows.Length - startIndex];
             // Process the data rows and populate the DataTable
-            for (int i = startIndex; i < rows.Length; i++)
+            Parallel.For(startIndex, rows.Length, (i) =>
             {
                 // Split the row into cells based on the separator
-                string[] cells = rows[i].Split(options.Separator);
+                string[] cells = options.RowParser.Parse(rows[i], options, i + 1).ToArray();
 
-                while (cells.Length > dataTable.Columns.Count)
+                lock (_syncRoot)
                 {
-                    dataTable.Columns.Add(new DataColumn($"Column {dataTable.Columns.Count + 1}"));
+                    while (cells.Length > dataTable.Columns.Count)
+                    {
+                        dataTable.Columns.Add(new DataColumn($"Column {dataTable.Columns.Count + 1}"));
+                    }
+                    // Truncate or pad the row values to match the number of columns
+                    Array.Resize(ref cells, dataTable.Columns.Count);
                 }
 
-                // Truncate or pad the row values to match the number of columns
-                Array.Resize(ref cells, dataTable.Columns.Count);
+
 
                 // Optionally trim data
                 if (options.TrimData)
@@ -605,13 +610,21 @@ namespace GoWorkPro.CsvBuilder
                 // Check if the row should be skipped based on the SkipRow delegate
                 if (options.SkipRow != null && options.SkipRow.Invoke(string.Join(options.Separator, cells), i))
                 {
-                    continue; // Skip the current row
+                    return;
                 }
 
-                // Add a new row to the DataTable and fill it with the cell values
-                DataRow dataRow = dataTable.NewRow();
-                dataRow.ItemArray = cells;
-                dataTable.Rows.Add(dataRow);
+                lock (_syncRoot)
+                {
+                    // Add a new row to the DataTable and fill it with the cell values
+                    rowsResult[i - startIndex] = cells.ToList();
+                }
+            });
+
+            foreach (var row in rowsResult)
+            {
+                var datatableRow = dataTable.NewRow();
+                datatableRow.ItemArray = row.ToArray();
+                dataTable.Rows.Add(datatableRow);
             }
             return dataTable;
         }

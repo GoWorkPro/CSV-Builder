@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace GoWorkPro.CsvBuilder
@@ -40,6 +41,21 @@ namespace GoWorkPro.CsvBuilder
         /// Gets or sets a boolean indicating whether to remove rows from the CSV data that are empty after processing.
         /// </summary>
         public bool RemoveEmptyRows { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a boolean indicating whether a backslash `\` can be used to escape the cell separator character within a cell value.
+        /// </summary>
+        public bool AllowBackslashToEscapeCellSeparator { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a IRowParser that allows custom logic for parsing a CSV row into cells. 
+        /// If set, this custom parsing logic takes precedence over the default parsing logic. 
+        /// The function is expected to take a CSV row as input and return an enumerable collection of cell values.
+        /// </summary>
+        [DisallowNull, NotNull]
+        public IRowParser RowParser { get; set; } = new RowParser();
+
+
     }
 
 
