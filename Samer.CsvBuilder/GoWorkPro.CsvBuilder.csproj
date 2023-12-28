@@ -67,40 +67,12 @@ https://goworkpro.github.io/CSV-Builder-Utility/
 		<Copyright>CsvBuilder Utility © 2023 Samer Shahbaz. All rights reserved.</Copyright>
 		<PackageIcon>csv-icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>4.1.0</Version>
+		<Version>4.2.1</Version>
 		<PackageProjectUrl>https://goworkpro.github.io/CSV-Builder-Utility/</PackageProjectUrl>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/GoWorkPro/CSV-Builder.git</RepositoryUrl>
 		<PackageReleaseNotes>New Features:
-
-ReadFile Method (WithOptions):
-
-Introduces the ReadFile method, allowing users to read CSV data from a file with specified options for enhanced processing.
-ReadFileTill Method:
-
-Adds the ReadFileTill method, enabling users to read CSV data from a file until a specified criteria is met, providing dynamic extraction capabilities.
-ToDataTables Method Enhancements:
-
-Enhances the ToDataTables method to accept start and end criteria, facilitating more refined data extraction based on specified criteria.
-Introduces an overload with an option to skip rows matching criteria values during DataTable creation.
-SetValue and GetValue Methods:
-
-Introduces SetValue and GetValue methods, enabling users to set and retrieve specific cell values in the CSV data with ease.
-GetRowValues and SetRow Methods:
-
-Adds GetRowValues and SetRow methods, providing functionalities to retrieve values from and set values for entire rows, enhancing row-level manipulation.
-Optimizations:
-
-Implements optimization measures for enhanced performance and efficiency across various methods.
-Other Enhancements:
-
-ToString Method Override:
-
-Enhances the ToString method for improved human-readable string representation of the CSV extractor.
-ReadExcelFileToCsv and ReadFromText Methods:
-
-Continues to provide functionality for reading CSV data from Excel files and text strings, ensuring compatibility and ease of use.
-Note: Please refer to the documentation for detailed information on the usage of new features and optimizations. Upgrade to this version for an improved and more versatile CSV processing experience.</PackageReleaseNotes>
+1. Added Support for to Read Excel Stream to CSV</PackageReleaseNotes>
 		<PackageTags>CSV, CSV Builder, Dataset, Build Csv, Comman Sperated Values</PackageTags>
 	</PropertyGroup>
 

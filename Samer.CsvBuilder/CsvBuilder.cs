@@ -507,32 +507,64 @@ namespace GoWorkPro.CsvBuilder
         /// <returns>An instance of <see cref="ICsvExtractor"/> containing the data from the Excel file in CSV format.</returns>
         public static ICsvExtractor ReadExcelFileToCsv(string excelFilePath)
         {
+            using (StreamReader streamReader = new StreamReader(excelFilePath))
+            {
+                streamReader.ReadToEnd();
+                streamReader.BaseStream.Position = 0;
+                return ReadExcelStreamToCsv(streamReader.BaseStream);
+            }
+        }
+
+        /// <summary>
+        /// Converts the contents of an Excel file to a CSV extractor.
+        /// </summary>
+        /// <param name="inputStream">The stream of the Excel file to be converted.</param>
+        /// <returns>An instance of <see cref="ICsvExtractor"/> containing the data from the Excel file in CSV format.</returns>
+        public static ICsvExtractor ReadExcelStreamToCsv(Stream inputStream, int topRowsToPreserve = 0, int startingCellColumn = 0)
+        {
             var dataset = new DataSet();
-            using (var workbook = new XLWorkbook(excelFilePath))
+
+            using (var workbook = new XLWorkbook(inputStream))
             {
                 foreach (var worksheet in workbook.Worksheets)
                 {
                     var dataTable = new DataTable();
                     var range = worksheet.RangeUsed();
-                    foreach (var row in range.RowsUsed())
-                    {
-                        var values = row.CellsUsed().Select(cell => cell.GetString()).ToArray();
 
-                        while (values.Length > dataTable.Columns.Count)
+                    for (int rowIndex = 1; rowIndex <= range.RowCount(); rowIndex++)
+                    {
+                        // Skip rows above the topRowsToPreserve
+                        if (rowIndex <= topRowsToPreserve)
+                            continue;
+
+                        var values = new List<string>();
+
+                        for (int colIndex = 1; colIndex <= range.ColumnCount(); colIndex++)
+                        {
+                            // Skip columns before the startingCellColumn
+                            if (colIndex < startingCellColumn)
+                                continue;
+
+                            var cell = worksheet.Cell(rowIndex, colIndex);
+                            values.Add(cell.GetString());
+                        }
+
+                        // Truncate or pad the row values to match the number of columns
+                        while (values.Count > dataTable.Columns.Count)
                         {
                             dataTable.Columns.Add(new DataColumn($"Column {dataTable.Columns.Count + 1}"));
                         }
 
-                        // Truncate or pad the row values to match the number of columns
-                        Array.Resize(ref values, dataTable.Columns.Count);
+                        values.Resize(dataTable.Columns.Count, string.Empty);
 
                         var dataTableRow = dataTable.NewRow();
-                        dataTableRow.ItemArray = values;
+                        dataTableRow.ItemArray = values.ToArray();
                         dataTable.Rows.Add(dataTableRow);
                     }
 
                     dataset.Tables.Add(dataTable);
                 }
+
                 return new CsvBuilder(dataset);
             }
         }
